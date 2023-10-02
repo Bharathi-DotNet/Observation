@@ -1,0 +1,476 @@
+﻿<nav class="fixed-nav-bar"> @await Html.PartialAsync("_Nav") </nav>
+
+<div class="row" id="divMainBody">
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            getClients();
+        });
+
+        function getClients() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClients")',
+                data: { chkValue: false },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#divMainBody').html(result);
+                    onCompletePrepareDatatable();
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onCompletePrepareDatatable() {
+            $('#dataTableGrid').DataTable({
+                //dom: 'Bfrtip',
+                //lengthMenu: [
+                //    [10, 25, 50, -1],
+                //    ['10 rows', '25 rows', '50 rows', 'Show all']
+                //],
+
+                //buttons: [
+                //    'pageLength', 'copy', 'csv', 'excel', 'pdf', 'print'
+                //],
+                //order: [[1, 'desc']],
+                //scrollY: true,
+                //scrollX: true,
+                //scrollCollapse: true,
+                paging: false,
+                fixedColumns: {
+                    left: 1
+                },
+                //columnDefs: [
+                //    { width: 10, targets: 0 },
+                //    { width: 50, targets: 1 },
+                //    { width: 70, targets: 2 },
+                //    { width: 10, targets: 3 },
+                //    { width: 200, targets: 4 },
+                //    { width: 200, targets: 5 },
+                //    { width: 100, targets: 6 },
+                //    { width: 10, targets: 7 },
+
+                //]
+            });
+        }
+
+        $(document).on("click", ".onClickCreateClient", function(e) {
+            modelPopupForCreateClientForm(this);
+        });
+
+        function modelPopupForCreateClientForm(reff) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CreateClientForm")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#createClientForm').html(result);
+                    $('#createClientModal').modal('show');
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnCreateClientAjax = function(xhr, result) {
+            console.log("create client", result);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#createClientModal').modal("hide");
+                getClients();
+            }
+        }
+
+        $(document).on("click", ".onClickEditClient", function(e) {
+            var dataId = $(this).attr("data-id");
+            modelPopupForEditClientForm(dataId)
+        });
+
+        function modelPopupForEditClientForm(id) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditClientForm")',
+                data: { enquiryId: id },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#editClientForm').html(result);
+                    $('#editClientModal').modal("show");
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnUpdateClientAjax = function(xhr) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#editClientModal').modal("hide");
+                getClients();
+            }
+        }
+
+        $(document).on("click", ".onClickDeleteClient", function(e) {
+            var dataId = $(this).attr("data-id");
+            var clientName = $(this).attr("data-name");
+
+            bootbox.dialog({
+                title: "Confirm Client Delete",
+                message: "Are your sure to delete the client -" + " " + clientName + "! Press Yes if you want to proceed...",
+                buttons: {
+                    success: {
+                        label: "Yes",
+                        callback: function(result) {
+                            dialogForDeleteClient(dataId)
+                        }
+                    }
+                }
+            });
+
+        });
+
+        function dialogForDeleteClient(id) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("DeleteClient")',
+                data: { enquiryId: id },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    getClients();
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        $(document).on("click", ".onClickClientDetail", function(e) {
+            var dataId = $(this).attr("data-id");
+            navigateToClientDetail(dataId)
+        });
+
+        function navigateToClientDetail(id) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClientDetail")',
+                data: { enquiryId: id },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#clientDetail').html(result);
+                    $('#clientDetailModal').modal("show");
+                    //$('#showPaymentRemarks').hide();
+                    //$('#showAddComment').hide();
+                    //$('#showCommentSection').show();
+                    getEnquiryHistory()
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function getEnquiryHistory(id) {
+            var id = $('#enquiryId').val();
+            var val = document.getElementById("isCommentSelected").checked;
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClientActivity")',
+                data: { enquiryId: id, isComment: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#clientHistory').html(result);
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function ChangeBda() {
+            var bdaId = document.getElementById("ddlBda").value;
+            var enquiryId = $('#enquiryId').val();
+            console.log(enquiryId)
+            if (bdaId == 0) {
+                return false;
+            }
+            $.ajax({
+                url: '@Url.Action("UpdateBDAForClient")',
+                dataType: "html",
+                data: { "bdaId": bdaId, "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        function ChangeTech() {
+            var techId = document.getElementById("ddlTech").value;
+            var enquiryId = $('#enquiryId').val();
+            console.log(enquiryId)
+            if (techId == 0) {
+                return false;
+            }
+            $.ajax({
+                url: '@Url.Action("UpdateTechExpertForClient")',
+                dataType: "html",
+                data: { "techId": techId, "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("click", "#modalOnCloseClientDetail", function(e) {
+            //getClients();
+            $('#clientDetailModal').modal("hide");
+        });
+
+        $(document).on("click", "#onClickPaymentRemarks", function(e) {
+            $('#showPaymentRemarks').show();
+            $('#showAddComment').hide();
+            $('#showCommentSection').hide();
+        });
+        $(document).on("click", "#onClickAddComments", function(e) {
+            $('#showPaymentRemarks').hide();
+            $('#showAddComment').show();
+            $('#showCommentSection').hide();
+        });
+        $(document).on("click", "#onClosePaymentRemarks", function(e) {
+            $('#showPaymentRemarks').hide();
+            $('#showAddComment').hide();
+            $('#showCommentSection').show();
+        });
+        $(document).on("click", "#onCloseAddComments", function(e) {
+            $('#showPaymentRemarks').hide();
+            $('#showAddComment').hide();
+            $('#showCommentSection').show();
+        });
+
+        $(document).on("click", "#onSubmitPaymentRemarks", function(e) {
+            var remarks = document.getElementById("paymentRemarksValue").value;
+            if (remarks == '') {
+                $('#errorMessage').append("Please fill the remarks");
+                return;
+            }
+            var enquiryId = $('#enquiryId').val();
+            UpdatePaymentRemarks(enquiryId, remarks)
+        });
+
+        function UpdatePaymentRemarks(enquiryId, remarks) {
+            $.ajax({
+                url: '@Url.Action("UpdatePaymentRemarks")',
+                dataType: "html",
+                data: { "enquiryId": enquiryId, "remarks": remarks, "isRegsitered": false },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("click", "#onClientRegistred", function(e) {
+            var enquiryId = $('#enquiryId').val();
+            onRegistred(enquiryId)
+        });
+
+        function onRegistred(enquiryId) {
+            $.ajax({
+                url: '@Url.Action("IsRegistered", "Project")',
+                dataType: "html",
+                data: { "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    $('#clientDetailModal').modal("hide");
+                    $('#divMainBody').html(response);
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("click", "#onSubmitAddComment", function(e) {
+            var remarks = document.getElementById("addCommentValue").value;
+            if (remarks == '') {
+                $('#errorComment').append("Please fill the comment");
+                return;
+            }
+            var enquiryId = $('#enquiryId').val();
+            UpdateAddComment(enquiryId, remarks)
+        });
+
+        function UpdateAddComment(enquiryId, remarks) {
+            $.ajax({
+                url: '@Url.Action("UpdateComments")',
+                dataType: "html",
+                data: { "enquiryId": enquiryId, "remarks": remarks },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        function ChangeAppoinmentDate() {
+            var date = document.getElementById("appoinmentDate").value;
+            var enquiryId = $('#enquiryId').val();
+            $.ajax({
+                url: '@Url.Action("UpdateAppoinmentDate")',
+                dataType: "html",
+                data: { "appoinmentDate": date, "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("click", "#isTechAppoinmentSelected", function(e) {
+            var ChkValue = false;
+            var val = document.getElementById("isTechAppoinmentSelected").checked;
+            var bdaId = document.getElementById("ddlBda").value;
+            var techId = document.getElementById("ddlTech").value;
+
+            if (techId == 0) {
+                bootbox.dialog({
+                    title: "Change Appoinment",
+                    message: "No technical persons are assinged...",
+                });
+                return false;
+            }
+            if (bdaId == 0) {
+                bootbox.dialog({
+                    title: "Change Appoinment",
+                    message: "No bda persons are assinged...",
+                });
+                return false;
+            }
+            var enquiryId = $('#enquiryId').val();
+            ChangeToTechAppoinmentConfirmation(enquiryId, val)
+        });
+
+        function ChangeToTechAppoinmentConfirmation(enquiryId, ChkValue) {
+            if (ChkValue) {
+                ChangeToTechAppoinment(enquiryId, ChkValue);
+                return;
+            }
+            bootbox.dialog({
+                title: "Disable Tech Appoinment",
+                message: "Are your sure want to disable!",
+                buttons: {
+                    success: {
+                        label: "Yes",
+                        callback: function(result) {
+                            ChangeToTechAppoinment(enquiryId, ChkValue)
+                        }
+                    }
+                },
+                onEscape: function() {
+                    $("#isTechAppoinmentSelected").prop('checked', true);
+                }
+            });
+        }
+
+        function ChangeToTechAppoinment(enquiryId, ChkValue) {
+
+            $.ajax({
+                url: '@Url.Action("UpdateAsTechAppoinment")',
+                dataType: "html",
+                data: { "ChkValue": ChkValue, "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function(response) {
+                    navigateToClientDetail(enquiryId)
+                },
+                error: function(err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("change", "#isFutureSelected", function(e) {
+            var val = document.getElementById("isFutureSelected").checked;
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClients")',
+                data: { chkValue: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#divMainBody').html(result);
+                    onCompletePrepareDatatable();
+                    $("#isFutureSelected").prop('checked', val);
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        });
+
+        function FilterClientsData(e) {
+            val = e.value;
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClients")',
+                data: { chkValue: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#divMainBody').html(result);
+                    onCompletePrepareDatatable();
+                    $('#' + e.id).prop('checked', true);
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function showAllComments() {
+
+        }
+
+    </script>
+}

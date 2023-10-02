@@ -1,0 +1,146 @@
+﻿ @inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    string EmpId = @HttpContextAccessor.HttpContext.Session.GetString("CurrentUserId");
+   
+}
+<header>
+   
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XBGSP9WH3R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XBGSP9WH3R');
+</script>
+
+
+
+<style>
+
+.dropdown {
+  float: left;
+  
+}
+
+.dropdown .dropbtn {
+ 
+  border: none;
+  outline: none;
+  color: black;
+ 
+  background-color: inherit;
+  font-family: inherit;
+  
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: skyblue;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: skyblue;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+
+</style>
+
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+           
+            <button  class="navbar-toggler  " type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon  "></span>
+            </button>
+            <Span class="navbar-brand"  >KENFRA </Span>
+            
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <li class="nav-item">
+                           
+                            <a class=" nav-link text-dark onClickCreateClient"    data-toggle="modal" data-target="#createClientModal" title="Only New Enquiry"><i class="fa fa-add"></i> New</a>
+                        </li>
+                    }
+                    @if ((Access != Enquiry.Web.Enum.Roles.Executive.ToString() && Dept == Enquiry.Web.Enum.Department.Tech.ToString()) || Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Enquiry" asp-action="Index">Enquiry</a>
+                        </li>
+                    }
+                    @if (Access != Enquiry.Web.Enum.Roles.Executive.ToString() || Dept == Enquiry.Web.Enum.Department.Tech.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Project" asp-action="Index">Production</a>
+                        </li>
+                    }
+                    @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() || Dept == Enquiry.Web.Enum.Department.Publication.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Publication" asp-action="Index">Publication</a>
+                        </li>
+                    }
+                    @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Visitor" asp-action="Index">Visitors</a>
+                        </li>
+                    }
+                    @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
+                        </li>
+                    }
+                     
+                        
+                        </ul>     
+                             
+                       <div class="dropdown">
+                             <button class="dropbtn nav-item">Hi!<b> @HttpContextAccessor.HttpContext.Session.GetString("EmployeeName")</b>
+                                   <i class="fa fa-caret-down"></i>
+                             </button>
+                            <div class="dropdown-content">
+                               <a href="#">Profile</a>
+                               <a href="#">PayRoll</a>
+                               <a class="nav-link text-dark " asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>
+                             </div>
+                       </div> 
+                         
+                    
+                       
+                    
+                
+               
+            </div>
+           
+        </div>
+    </nav>
+</header>

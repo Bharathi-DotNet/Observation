@@ -1,0 +1,41 @@
+﻿@using Enquiry.Web.Dtos
+@model EditClientDto
+
+<form asp-action="EditClient" asp-controller="Enquiry" data-ajax="true" data-ajax-method="post" data-ajax-success="OnUpdateClientAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        @Html.Hidden("EnquiryId", Model.EnquiryId)
+       
+         
+
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.ClientName, new { @class = "col-sm-2 col-form-label" })
+            @Html.EditorFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control" } })
+            <span class="text-danger" asp-validation-for="ClientName"></span>
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Domain, new { @class = "col-sm-2 col-form-label" })
+            @Html.EditorFor(model => model.Domain, new { htmlAttributes = new { @class = "form-control" } })
+            <span class="text-danger" asp-validation-for="Domain"></span>
+        </div>
+        <div class="col-md-12">
+            @Html.LabelFor(model => model.Contact, new { @class = "col-sm-2 col-form-label" })
+            @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
+            <span class="text-danger" asp-validation-for="Contact"></span>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-lg btn-primary">Update</button>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />
+

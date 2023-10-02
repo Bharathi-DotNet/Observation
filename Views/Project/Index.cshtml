@@ -1,0 +1,379 @@
+﻿@section Styles{
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+    </style>
+}
+
+    <nav class="fixed-nav-bar"> @await Html.PartialAsync("_Nav") </nav>
+
+    <div class="row" id="divProjectBody"></div>
+
+    <div id="editPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color:cadetblue">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Phase</h4>
+                    <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="editPhase">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editHoldPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color:cadetblue">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Phase</h4>
+                    <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="editHoldPhase">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts{
+    <script type="text/javascript" language="javascript">
+
+        var table = 0;
+
+        $(document).ready(function () {
+            getPhases();
+
+        });
+
+        function getPhases() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPhase")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#divProjectBody').html(result);
+                    onCompletePrepareDatatable();
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onCompletePrepareDatatable() {
+            $('#dataTableGrid').DataTable({
+                paging: false,
+                fixedColumns: {
+                    left: 1
+                }
+            });
+
+            FilterStatuses();
+        }
+
+        function FilterStatuses() {
+            //Get a reference to the new datatable
+            var table = $('#dataTableGrid').DataTable();
+            $("#dataTableGrid_filter.dataTables_filter").append($("#statusFilter"));
+
+            var categoryIndex = 0;
+            $("#dataTableGrid th").each(function (i) {
+                if ($($(this)).html() == "Status") {
+                    categoryIndex = i; return false;
+                }
+            });
+
+            //Use the built in datatables API to filter the existing rows by the status column
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var selectedItem = $('#statusFilter').val()
+                    var category = data[categoryIndex];
+                    if (selectedItem === "" || category.includes(selectedItem)) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+
+            //Set the change event for the status Filter dropdown to redraw the datatable each time
+            //a user selects a new filter.
+            $("#statusFilter").change(function (e) {
+                table.draw();
+            });
+
+            table.draw();
+        }
+
+        $(document).on("click", "#onClickRegisteredClientDetail", function (e) {
+            var dataId = $(this).attr("data-id");
+            var projectId = $(this).attr("data-projectid");
+            onClickRegisteredClientDetail(dataId, projectId)
+        });
+
+        function onClickRegisteredClientDetail(enquiryId, projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRegisteredClientDetail")',
+                data: { enquiryId: enquiryId, projectId: projectId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#registeredClientDetail').html(result);
+                    $('#registeredClientDetailModal').modal('show');
+                    onChangeProject(projectId);
+                    getEnquiryHistory(enquiryId);
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onChangeProject(val) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetProjectDetail")',
+                data: { projectId: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#clientProjectDetail').html(result);
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+       
+
+        function onClickEditPayment() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditPaymentForm")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#editPayment').html(result);
+                    $('#editPaymentModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onClickCreatePayment(projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CreatePaymentForm")',
+                data: { projectId: projectId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#createPayment').html(result);
+                    $('#createPaymentModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onClickEditPhase(phaseId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditPhaseForm")',
+                data: { phaseId: phaseId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#editPhase').html(result);
+                    $('#editPhaseModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onClickCreatePhase(projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CreatePhaseForm")',
+                data: { projectId: projectId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#createPhase').html(result);
+                    $('#createPhaseModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnCreatePaymentAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#createPaymentModal').modal("hide");
+                onChangeProject(xhr.phase.projectId);
+            }
+        }
+
+        OnCreatePhaseAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#createPhaseModal').modal("hide");
+                onChangeProject(xhr.phase.projectId);
+            }
+        }
+
+        OnEditPhaseAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#editPhaseModal').modal("hide");
+                onChangeProject(xhr.phase.projectId);
+            }
+        }
+
+        function onClickCreateProject(enquiryId) {
+            $.ajax({
+                url: '@Url.Action("IsRegistered", "Project")',
+                dataType: "html",
+                data: { "enquiryId": enquiryId },
+                type: "GET",
+                contentType: "application/json",
+                success: function (response) {
+                    $('#createProjectModal').modal("show");
+                    $('#createProject').html(response);
+                },
+                error: function (err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        function onClickPhaseHold(phaseId) {
+            $.ajax({
+                url: '@Url.Action("GetProjectOnHoldForm")',
+                dataType: "html",
+                data: { "phaseId": phaseId },
+                type: "GET",
+                contentType: "application/json",
+                success: function (response) {
+                    $('#holdPhaseModal').modal("show");
+                    $('#holdPhase').html(response);
+                },
+                error: function (err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        OnEditPhaseOnHoldAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#editHoldPhaseModal').modal("hide");
+                onChangeProject(xhr.phase.projectId);
+            }
+        }
+
+        function onClickEditPhaseHold(phaseId) {
+            $.ajax({
+                url: '@Url.Action("EditProjectOnHoldForm")',
+                dataType: "html",
+                data: { "phaseId": phaseId },
+                type: "GET",
+                contentType: "application/json",
+                success: function (response) {
+                    $('#editHoldPhaseModal').modal("show");
+                    $('#editHoldPhase').html(response);
+                },
+                error: function (err) {
+                    alert(err.responseText);
+                }
+            });
+        }
+
+        $(document).on("focusout", "#updateProgress", function (e) {
+            var progressId = $(this).attr("data-progressid");
+            var phaseId = $(this).attr("data-phaseid");
+            var projectId = $(this).attr("data-projectid");
+            var val = $(this).val();
+            updatePrgressOnFocusOut(progressId, phaseId, projectId, val);
+        });
+
+        function updatePrgressOnFocusOut(progressId, phaseId, projectId, val) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("UpdateProgress")',
+                data: { progressId: progressId, phaseId: phaseId, value: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    onChangeProject(projectId)
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+        function onClickBackToEnquiry(enquiryId, projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("UpdateBackToEnquiry","Enquiry")',
+                data: { enquiryId: enquiryId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    onClickRegisteredClientDetail(enquiryId, projectId)
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function getEnquiryHistory(enquiryId) {
+            
+            var val = true;
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetClientActivity", "Enquiry")',
+                data: { enquiryId: enquiryId, isComment: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#clientHistoryOnProjectDetail').html(result);
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+
+    </script>
+}

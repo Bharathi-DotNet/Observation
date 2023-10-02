@@ -1,0 +1,52 @@
+﻿@using Enquiry.Web.Dtos
+@model RegisteredClientDetailDto
+
+ <style>
+.lin {
+  
+  line-height: 1.2;
+}
+</style>
+       <div class="row lin" style="Color:Darkred">
+
+    <div class="form-group row" >
+        <div class="form-group col-md-1">
+            <label for="email"><b>@Model.ProjectDetailDto.FirstOrDefault(x=>x.ProjectId == Model.ProjectId).ProjectRef </b></label>
+
+        </div>
+        <div class="form-group col-md-3">
+            <label for="email"><b> @Model.ClientName</b></label>
+
+        </div>
+        <div class="form-group col-md-4">
+            <label for="email"><b>@Model.Domain</b></label>
+
+        </div>
+        <div class="form-group col-md-4">
+            <label for="email"><b>@Model.Contact</b></label>
+        </div>
+    </div>
+ 
+    <div class="form-group row">
+        <div class="form-group col-md-5">
+            <label for="email"><b>@Model.ProjectDetailDto.FirstOrDefault(x=>x.ProjectId == Model.ProjectId).ProjectName </b></label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="email"> @Model.TechName</label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="email"> @Model.BDAName</label>
+        </div>
+         
+       
+    </div>
+
+
+</div>
+       
+   
+             <div class="card-body" id="clientProjectDetail"></div>
+    
+                <div id="journalDetails"></div>
+
+

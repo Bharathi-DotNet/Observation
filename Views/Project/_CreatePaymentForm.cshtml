@@ -1,0 +1,35 @@
+﻿@using Enquiry.Web.Dtos
+@model CreatePayment
+
+@{
+    int projectId = ViewBag.projectId; 
+}
+
+<form asp-action="CreatePayment" asp-controller="Project" data-ajax="true" data-ajax-method="post" asp-route-projectId="@projectId" data-ajax-success="OnCreatePaymentAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.PartPayment, new { @class = "col-sm-6 col-form-label" })
+            <input asp-for="@Model.PartPayment" placeholder="Payment" class="form-control" />
+            <span class="text-danger" asp-validation-for="PartPayment"></span>
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.PaymentType, new { @class = "col-sm-6 col-form-label" })
+            @Html.DropDownListFor(model => @Model.PaymentType, (IEnumerable<SelectListItem>)ViewBag.paymentMode, "Select",
+            new { @class = "form-control col-md-4"})
+            <span class="text-danger" asp-validation-for="PaymentType"></span>
+        </div>
+         <div class="col-md-6">
+                                @Html.LabelFor(model => model.PaymentDate, new { @class = "col-sm-6 col-form-label" })
+                                <input asp-for="@Model.PaymentDate" class="form-control" />
+                                <span class="text-danger" asp-validation-for="PaymentDate"></span>
+                            </div>
+        <div class="col-md-6">
+                        <button type="submit" class="btn btn-sm btn-primary" style="margin-top:40px;">Submit</button>
+                    </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />

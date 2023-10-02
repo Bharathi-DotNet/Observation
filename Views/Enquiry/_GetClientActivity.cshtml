@@ -1,0 +1,15 @@
+﻿@using Enquiry.Web.Dtos
+@model IList<ClientActivityDto>
+
+@foreach (var item in Model)
+{
+    <div class="card mb-1">
+        
+            <b>@item.EmployeeName on @item.CreatedDate</b>
+           
+           
+                @item.Comments
+           
+        
+    </div>
+}

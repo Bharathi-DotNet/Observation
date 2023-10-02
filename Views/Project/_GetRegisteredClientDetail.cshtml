@@ -1,0 +1,60 @@
+﻿@using Enquiry.Web.Dtos
+@model RegisteredClientDetailDto
+
+
+<style>
+    .lin {
+
+      line-height: 1.2;
+    }
+</style> 
+
+<div class="row" style="Color:Darkred" >
+    
+    
+        <div class="form-group col-md-2" >
+            
+            <label style="height:40%" for="email"><b>@Model.ProjectDetailDto.FirstOrDefault(x=>x.ProjectId == Model.ProjectId).ProjectRef </b></label>
+
+        </div>
+        <div class="form-group col-md-3">
+            <label for="email"><b> @Model.ClientName</b></label>
+
+        </div>
+        <div class="form-group col-md-3">
+            <label for="email"><b>@Model.Domain</b></label>
+
+        </div> <? echo $_SERVER["REMOTE_ADDR"]; ?> 
+        <div class="form-group col-md-3">
+            <label for="email"><b>@Model.Contact</b></label>
+        </div>
+    
+        <div class="form-group col-md-5">
+            <label for="email"><b>@Model.ProjectDetailDto.FirstOrDefault(x=>x.ProjectId == Model.ProjectId).ProjectName </b></label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="email"> @Model.TechName</label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="email"> @Model.BDAName</label> <b style="Color:Darkblue"> &nbsp;Id : @Model.ProjectId</b>
+        </div>
+         
+             
+       
+       
+ </div>
+ @if (!Model.BackToEnquiry)
+                {
+                    <button class="float-end btn-outline-info" onclick="return onClickBackToEnquiry(@Model.EnquiryId, @Model.ProjectId)">Back To Enquiry</button>
+                }
+                
+<hr />
+
+
+
+<div  id="clientProjectDetail">
+</div>
+
+
+                  @* <div style="height:300px; overflow:scroll" id="clientHistoryOnProjectDetail"></div>
+                </div>*@

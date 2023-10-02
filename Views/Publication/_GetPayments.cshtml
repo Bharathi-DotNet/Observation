@@ -1,0 +1,141 @@
+﻿@using Enquiry.Web.Dtos
+@model ProjectDetailDto
+@using Enquiry.Web.Extensions
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    int balance = 0;
+}
+ <style>
+.lin1 {
+  
+  line-height: 1.2;
+}
+</style>
+
+<small>
+        <hr  style="margin-top:-10px"/>
+<div class="row lin1" style="margin-top:-20px">
+    
+           
+       
+    <div class="col-md-3">
+        @if (Access != Enquiry.Web.Enum.Roles.Executive.ToString())
+        {
+            <table class="table table-striped" >
+                <thead>
+                    <tr style="Color:darkblue">
+                        @*<th scope="col">#</th>*@
+                        <th scope="col">Total</th>
+                        <th scope="col">Paid</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Date</th>
+                        @*<th scope="col">Action</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    
+                    @foreach (var (item, index) in Model.PaymentDetailDto.WithIndex())
+
+                    { 
+                        
+                       
+
+                        balance += item.PartPayment.Value;
+                        <tr>
+                           @* <th scope="row">@(index + 1)</th>*@
+                            <td>@Model.TotalPayment</td>
+                            <td>@item.PartPayment</td>
+                            <td>@(Model.TotalPayment - balance)</td>
+                            <td>@(item.PaymentDate.HasValue ? item.PaymentDate.Value.ToShortDateString() : null)</td>
+                            @*<td>
+                                <a class="btn btn-primary btn-xs" data-id="@item.PaymentId" data-toggle="modal" data-target="#editPaymentModal"
+                           title="Detail" onclick="onClickEditPayment()"><i class="fa fa-table"></i></a>
+                            </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+            {
+
+
+
+        <div class="col-md-6">
+            <table class="table table-striped"  >
+                <thead style="Color:darkblue">
+                    <tr>
+                        <th  style="Color:darkblue">Fee Confirmation </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>
+                            
+
+                                @Model.FeeConfirmation
+                           
+                        </td> </tr>    
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3" >
+            <table class="table table-striped"  >
+                <thead>
+                    <tr style="Color:darkblue">
+
+                         <th scope="col">PhaseName</th>
+                        <th scope="col">Assigned</th>
+                        <th scope="col">DeadLine</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var (item, index) in Model.PhaseDetailDto.Reverse().Take(3).WithIndex())
+                    {
+                        <tr>
+                            <td> @item.PhaseName  </td>
+                            <td>  @item.TechExpert  </td>
+                            <td> @Html.DisplayFor(modelItem => item.DeadLine)  </td>
+
+
+
+                        </tr>
+                    }
+                </tbody>
+        </table>
+    </div>
+    }
+
+</div>
+</small>
+<div id="editPaymentModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Payment</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editPayment">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="createPaymentModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Payment</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="createPayment">
+            </div>
+        </div>
+    </div>
+</div>

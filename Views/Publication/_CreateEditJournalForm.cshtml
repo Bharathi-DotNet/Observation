@@ -1,0 +1,90 @@
+﻿@using Enquiry.Web.Dtos
+@model JournalDetailDto
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    
+}
+
+@if (Dept == Enquiry.Web.Enum.Department.Publication.ToString() || Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+{
+    <form asp-action="CreateUpdateJournal" asp-controller="Publication" data-ajax="true" data-ajax-method="post" asp-route-projectId="@Model.ProjectId" data-ajax-success="OnCreateJournalAjax">
+
+        @Html.AntiForgeryToken()
+        <div class="row g-3">
+            @Html.Hidden("ProjectId", Model.ProjectId)
+            @Html.Hidden("PublicationId", Model.PublicationId)
+            <div class="col-md-6">
+                 @Html.LabelFor(model => model.DateOfSubmission, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.DateOfSubmission" class="form-control"/>
+                <span class="text-danger" asp-validation-for="DateOfSubmission"></span>
+              </div>  
+            
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.JournelName, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.JournelName" class="form-control" />
+                <span class="text-danger" asp-validation-for="JournelName"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Link, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.Link" class="form-control" />
+                <span class="text-danger" asp-validation-for="Link"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Publisher, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.Publisher" class="form-control" />
+                <span class="text-danger" asp-validation-for="Publisher"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.UserId, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.UserId" class="form-control" />
+                <span class="text-danger" asp-validation-for="UserId"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Password, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.Password" class="form-control" />
+                <span class="text-danger" asp-validation-for="Password"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Status, new { @class = "col-sm-6 col-form-label" })
+                @Html.DropDownListFor(m=>m.Status, ViewBag.JournalStatus as SelectList, "Select Status", new { @class = "form-control col-md-6" })
+                @*<input asp-for="@Model.Status" class="form-control" />*@
+                <span class="text-danger" asp-validation-for="Status"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Reason, new { @class = "col-sm-6 col-form-label" })
+                <input asp-for="@Model.Reason" class="form-control" />
+                <span class="text-danger" asp-validation-for="Reason"></span>
+            </div>
+            @*<div class="col-md-6">
+                 <input asp-for="@DateTime.Now;" class="form-control" readonly />
+                 <span class="text-danger"> @Html.DisplayFor(model => model.RemainderDate, new { @class = "col-sm-6 col-form-label" })</span>
+                
+                
+            </div>*@
+             <div class="col-md-6">
+                <button type="submit" class="btn btn-sm btn-primary" style="margin-top:40px;">Submit</button>
+            </div>
+
+            
+
+               
+           
+
+
+
+
+
+
+
+
+           
+             
+                
+        </div>
+
+    </form>
+}
+
+<partial name="_ValidationScriptsPartial" />

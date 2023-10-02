@@ -1,0 +1,56 @@
+﻿@using Enquiry.Web.Dtos
+@model EditPhaseOnHoldDto
+
+@{
+    int phaseId = ViewBag.PhaseId;
+}
+
+
+<form asp-action="UpdatePhaseOnProgress" asp-controller="Project" asp-route-phaseId="@phaseId" data-ajax="true" data-ajax-method="post" data-ajax-success="OnEditPhaseOnHoldAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-8">
+            @Html.LabelFor(model => model.Comment, new { @class = "col-md-8 col-form-label" })
+            <textarea asp-for="@Model.Comment" placeholder="Remarks" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="Comment"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.NextAppoinment, new { @class = "col-md-4 col-form-label" })
+            <input type="date" asp-for="@Model.NextAppoinment" placeholder="Deadline" class="form-control" />
+            <span class="text-danger" asp-validation-for="NextAppoinment"></span>
+        </div>
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-sm btn-primary">Complete</button>
+        </div>
+    </div>
+
+</form>
+
+
+<form asp-action="UpdatePhaseOnHold" asp-controller="Project" asp-route-phaseId="@phaseId" data-ajax="true" data-ajax-method="post" data-ajax-success="OnEditPhaseOnHoldAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-8">
+            @Html.LabelFor(model => model.Comment, new { @class = "col-md-8 col-form-label" })
+            <textarea asp-for="@Model.Comment" placeholder="Remarks" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="Comment"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.NextAppoinment, new { @class = "col-md-4 col-form-label" })
+            <input type="date" asp-for="@Model.NextAppoinment" placeholder="Deadline" class="form-control" />
+            <span class="text-danger" asp-validation-for="NextAppoinment"></span>
+        </div>
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-sm btn-primary">Complete</button>
+        </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />

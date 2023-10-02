@@ -1,0 +1,166 @@
+﻿<nav class="fixed-nav-bar"> @await Html.PartialAsync("_Nav") </nav>
+
+<div class="row" id="divMainBody">
+</div>
+
+@section Scripts{
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            getPublications();
+        });
+
+        function getPublications() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Publications")',
+                data: { chkValue: false },
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            success: function (result) {
+                $('#divMainBody').html(result);
+                onCompletePrepareDatatable();
+            },
+            error: function (err) {
+                console.log("Error", err)
+            }
+        });
+    }
+
+    function onCompletePrepareDatatable() {
+            $('#dataTableGrid').DataTable({
+                paging: false,
+                fixedColumns: {
+                    left: 1
+                },
+            });
+        }
+
+     function onClickPublicationDetail(enquiryId, projectId) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetPublicationClientDetail")',
+            data: {enquiryId: enquiryId, projectId: projectId},
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            success: function (result) {
+               $('#publicationDetail').html(result);
+                    $('#publicationDetailModal').modal("show");
+                    onChangeProject(projectId)
+                    onLoadJournalDetails(projectId);
+            },
+            error: function (err) {
+                console.log("Error", err)
+            }
+        });
+    }
+    function onChangeProject(val) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetPayments")',
+                data: { projectId: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#clientProjectDetail').html(result);
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onClickCreatePayment(projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CreatePaymentForm", "Project")',
+                data: { projectId: projectId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#createPayment').html(result);
+                    $('#createPaymentModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onClickEditPayment() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("EditPaymentForm", "Project")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#editPayment').html(result);
+                    $('#editPaymentModal').modal('show');
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnCreatePaymentAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#createPaymentModal').modal("hide");
+                onChangeProject(xhr.phase.projectId);
+            }
+        }
+
+        function onLoadJournalDetails(projectId) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetJournalDetails")',
+                data: { projectId: projectId },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#journalDetails').html(result);
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnCreateJournalAjax = function (xhr, result) {
+            console.log(xhr);
+            if (xhr.error && !xhr.success) {
+                alert(xhr.error);
+            }
+            else {
+                $('#createUpdateJournalModal').modal("hide");
+                $('#editJournalModal').modal("hide");
+                onLoadJournalDetails(xhr.publication.projectId);
+            }
+        }
+
+        function FilterPublishedData(e) {
+            val = e.value;
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Publications")',
+                data: { chkValue: val },
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#divMainBody').html(result);
+                    onCompletePrepareDatatable();
+                    $('#' + e.id).prop('checked', true);
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+    </script>
+ }

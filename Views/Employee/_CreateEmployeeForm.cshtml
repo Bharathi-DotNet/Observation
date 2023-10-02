@@ -1,0 +1,63 @@
+﻿@using Enquiry.Web.Dtos
+@model CreateEmployeeDto
+
+<form asp-action="CreateEmployee" asp-controller="Employee" data-ajax="true" data-ajax-method="post" data-ajax-success="OnCreateEmployeeAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.EmployeeName, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.EmployeeName" placeholder="Employee Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="EmployeeName"></span>
+        </div>
+                <div class="col-md-8">
+            @Html.LabelFor(model => model.Address, new { @class = "col-sm-2 col-form-label" })
+            <textarea asp-for="@Model.Address" placeholder="Enter Address" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="Address"></span>
+        </div>
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.DeptId, new { @class = "col-sm-2 col-form-label" })
+            @Html.DropDownListFor(model => model.DeptId, (IEnumerable<SelectListItem>)ViewBag.DeptList, "Select Department", new { @class = "form-control col-md-3", @id = "ddrcity" })
+            <span class="text-danger" asp-validation-for="DeptId"></span>
+        </div>
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.RoleId, new { @class = "col-sm-2 col-form-label" })
+            @Html.DropDownListFor(model => model.RoleId, (IEnumerable<SelectListItem>)ViewBag.RoleList, "Select Role", new { @class = "form-control col-md-3", @id = "ddrcity" })
+            <span class="text-danger" asp-validation-for="RoleId"></span>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.ContactNo, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.ContactNo" placeholder="Contact No" class="form-control" />
+            <span class="text-danger" asp-validation-for="ContactNo"></span>
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.EmailId, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.EmailId" placeholder="Enter Email" class="form-control" />
+            <span class="text-danger" asp-validation-for="EmailId"></span>
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.DOB, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.DOB" placeholder="Enter DOB" class="form-control" />
+            <span class="text-danger" asp-validation-for="DOB"></span>
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.DOJ, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.DOJ" asp-format="{dd/MM/yyyy}" placeholder="Enter DOJ" class="form-control" />
+            <span class="text-danger" asp-validation-for="DOJ"></span>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-lg btn-primary">Create</button>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />
+

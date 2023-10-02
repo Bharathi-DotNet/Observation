@@ -1,0 +1,84 @@
+﻿<nav class="fixed-nav-bar"> @await Html.PartialAsync("_Nav") </nav>
+
+<div class="row" id="divMainBody"></div>
+
+@section Scripts{
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            getEmployees()
+        });
+
+        function getEmployees() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetEmployees")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#divMainBody').html(result);
+                    onCompletePrepareDatatable();
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onCompletePrepareDatatable() {
+            $('#dataTableGrid').DataTable({
+                order: [[1, 'desc']],
+                scrollY: true,
+                scrollX: true,
+                scrollCollapse: true,
+                fixedColumns: {
+                    left: 1
+                },
+                columnDefs: [
+                    { width: 120, targets: 0 },
+                    { width: 70, targets: 1 },
+                    { width: 160, targets: 2 },
+                    { width: 200, targets: 3 },
+                    { width: 150, targets: 4 },
+                    { width: 150, targets: 5 },
+                    { width: 150, targets: 6 },
+                    { width: 200, targets: 7 },
+                    { width: 200, targets: 8 }
+                ]
+            });
+        }
+
+        $(document).on("click", ".onClickCreateEmployee", function(e) {
+            modelPopupForCreateEmployeeForm(this);
+        });
+
+        function modelPopupForCreateEmployeeForm(reff) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("CreateEmployeeForm")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function(result) {
+                    $('#createEmployeeForm').html(result);
+                    $('#createEmployeeModal').modal("show");
+                },
+                error: function(err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        OnCreateEmployeeAjax = function(xhr) {
+            console.log(xhr);
+            if (xhr.Error) {
+                alert(xhr.Error);
+            }
+            else {
+                $('#createEmployeeModal').modal("hide");
+                getEmployees();
+            }
+        }
+    </script>
+}

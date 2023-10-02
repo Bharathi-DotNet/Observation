@@ -1,0 +1,119 @@
+﻿@using Enquiry.Web.Dtos
+@model EditPhaseDto
+@using Enquiry.Web.Extensions
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+}
+
+<form asp-action="UpdatePhase" asp-controller="Project" data-ajax="true" data-ajax-method="post" data-ajax-success="OnEditPhaseAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        @Html.HiddenFor(model => model.PhaseId)
+        @if (Access == Enquiry.Web.Enum.Roles.TeamLead.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+        {
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.PhaseName, new { @class = "col-md-6 col-form-label" })
+                <input asp-for="@Model.PhaseName" placeholder="Phase Name" class="form-control" />
+                <span class="text-danger" asp-validation-for="PhaseName"></span>
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.DeadLine, new { @class = "col-md-6 col-form-label" })
+                <input type="date" asp-for="@Model.DeadLine" placeholder="Deadline" class="form-control" />
+                <span class="text-danger" asp-validation-for="DeadLine"></span>
+            </div>
+            
+            @Html.HiddenFor(model => model.TechExpert)
+            @Html.HiddenFor(model => model.Remarks)
+            @Html.HiddenFor(model => model.DemoDate)
+            @Html.HiddenFor(model => model.TechExpert1)
+            @Html.HiddenFor(model => model.Remarks1)
+            @Html.HiddenFor(model => model.DemoDate1)
+            @Html.HiddenFor(model => model.TechExpert2)
+            @Html.HiddenFor(model => model.Remarks2)
+            @Html.HiddenFor(model => model.DemoDate2)
+            @Html.HiddenFor(model => model.Programmer)
+            @Html.HiddenFor(model => model.Remarks3)
+            @Html.HiddenFor(model => model.DemoDate3)
+        }
+        @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() )
+        {
+            @Html.HiddenFor(model => model.PhaseName)
+            @Html.HiddenFor(model => model.DeadLine)
+            <div class="col-md-4">
+                Tech Expert
+                @Html.DropDownListFor(model => model.TechExpert, (IEnumerable<SelectListItem>)ViewBag.techExpert, "",
+            new { @class = "form-control col-md-4"})
+                <span class="text-danger" asp-validation-for="TechExpert"></span>
+            </div>
+            <div class="col-md-4"> Work Type 
+                
+                <input asp-for="@Model.Remarks"  class="form-control" />
+                <span class="text-danger" asp-validation-for="Remarks"></span>
+            </div>
+            <div class="col-md-4">Due Date
+                
+                <input type="date" asp-for="@Model.DemoDate"  class="form-control" />
+                <span class="text-danger" asp-validation-for="DemoDate"></span> 
+            </div>
+            <div class="col-md-4">
+                
+                @Html.DropDownListFor(model => model.TechExpert1, (IEnumerable<SelectListItem>)ViewBag.techExpert, "",
+            new { @class = "form-control col-md-4"})
+                <span class="text-danger" asp-validation-for="TechExpert1"></span>
+            </div>
+            <div class="col-md-4"> 
+                
+                <input asp-for="@Model.Remarks1"  class="form-control" />
+                <span class="text-danger" asp-validation-for="Remarks1"></span>
+            </div>
+            <div class="col-md-4"> 
+                <input type="date" asp-for="@Model.DemoDate1"  class="form-control" />
+                <span class="text-danger" asp-validation-for="DemoDate1"></span>
+            </div>
+            <div class="col-md-4">
+                
+                @Html.DropDownListFor(model => model.TechExpert2, (IEnumerable<SelectListItem>)ViewBag.techExpert, "",
+            new { @class = "form-control col-md-4"})
+                <span class="text-danger" asp-validation-for="TechExpert2"></span>
+            </div>
+            <div class="col-md-4">
+                
+                <input asp-for="@Model.Remarks2"  class="form-control" />
+                <span class="text-danger" asp-validation-for="Remarks2"></span>
+            </div>
+            <div class="col-md-4">
+                
+                <input type="date" asp-for="@Model.DemoDate2" placeholder="Deadline" class="form-control" />
+                <span class="text-danger" asp-validation-for="DemoDate2"></span>
+            </div>
+            <hr/>
+            <div class="col-md-4">
+                Programmer
+                @Html.DropDownListFor(model => model.Programmer, (IEnumerable<SelectListItem>)ViewBag.programmer, "",
+            new { @class = "form-control col-md-4"})
+                <span class="text-danger" asp-validation-for="Programmer"></span>
+            </div>
+            <div class="col-md-4">Work Type
+                
+                <input asp-for="@Model.Remarks3"  class="form-control" />
+                <span class="text-danger" asp-validation-for="Remarks3"></span>
+            </div>
+            <div class="col-md-4">
+                Due Date
+                <input type="date" asp-for="@Model.DemoDate3"  class="form-control" />
+                <span class="text-danger" asp-validation-for="DemoDate3"></span>
+            </div>
+        }
+        
+       
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-sm btn-primary">Must Update With due date</button>
+        </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />

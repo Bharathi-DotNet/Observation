@@ -1,0 +1,185 @@
+﻿@using Enquiry.Web.Dtos
+@model IList<JournalDetailDto>
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    int projectId = ViewBag.projectId;
+}
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    
+}
+@*@if (Dept == Enquiry.Web.Enum.Department.Publication.ToString())
+{ 
+    <div class="btn btn-primary"  style="margin-top:-30px" data-toggle="modal" data-target="#createPublicationModal"
+     title="Detail" onclick="onClickCreateJournal(@projectId)">
+        Add Publication
+    </div>
+}*@
+  <small>
+<div class="row" style="margin-top:-30px" >
+   
+    
+        <table id="dataTableGrid" class="table table-striped">
+            <thead class="thead-dark">
+                <tr style="width: 100%">
+                    <th type="button" class="bg-danger" style="width: 10%; color:darkblue"  data-toggle="modal" data-target="#createPublicationModal"
+     title="Add Journal" onclick="onClickCreateJournal(@projectId)"> AddJournal
+
+                    </th>
+                   
+                    <th style="width: 35%">Journal</th>
+                    
+                     <th style="width: 7%">Publisher</th>
+                   <th style="width: 12%">UserId</th>
+                    <th style="width: 7%">Password</th>
+                    <th style="width: 7%">Status</th>
+                    <th style="width: 21%">Reason</th>
+                    @* <th style="width: 8%">StatusDate</th>*@
+                      
+                    
+                    
+                    
+                </tr>
+            </thead>
+            <tbody  style="height:8px>
+                
+                @foreach (var item in Model)
+                {
+                    @Html.HiddenFor(modelItem => item.PublicationId)
+                    @Html.HiddenFor(modelItem => item.ProjectId)
+                    <tr style="width: 100%">
+                        <td style="width: 10%">
+                            <a class="btn btn-info btn-sm" data-id="@item.PublicationId" 
+                           title="Update Journal Status" onclick="onClickUpdateJournal(@item.PublicationId)"> 
+                           @Html.DisplayFor(modelItem => item.DateOfSubmission) <i class="fa fa-edit"></i></a>
+                        </td>
+                         @*<td style="width: 6%">
+                            @Html.DisplayFor(modelItem => item.DateOfSubmission)
+                        </td>*@
+                        <td  style="width: 35%">
+                            <style>
+                                a:link, a:visited, a:hover, a:active{
+    text-decoration: none;
+}
+                            </style>
+                            
+                             <a class="link-primary " title="@Html.DisplayFor(modelItem => item.JournelName)" href="@item.Link" target="_blank">@Html.DisplayFor(modelItem => item.JournelName)</a>
+                        </td>
+                        
+                        <td style="width: 7%">
+                            @Html.DisplayFor(modelItem => item.Publisher)
+                        </td>
+                        <td style="width: 12%">
+                            @Html.DisplayFor(modelItem => item.UserId)
+                        </td>
+                        <td style="width: 7%">
+                            @Html.DisplayFor(modelItem => item.Password)
+                        </td>
+
+                        <td style="width: 7%">
+                             @if( @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Submitted.ToString())
+                        {
+                            <span style="color:darkgreen">
+                                <b> @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status)</b>
+                            </span>
+                        }
+                             @if(@Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Rejected.ToString())
+                        {
+                            <span >
+                                <b> @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status)</b>
+                            </span>
+                        }
+                        @if( @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Major.ToString()
+                        || @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Minor.ToString())
+                        {
+                            <span style="color:darkblue">
+                                <b> @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status)</b>
+                            </span>
+                        }
+                        @if( @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Accepted.ToString()
+                        || @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status) == Enquiry.Web.Enum.JournalStatus.Published.ToString())
+                        {
+                            <span style="color:darkred">
+                                <b> @Enum.GetName(typeof(Enquiry.Web.Enum.JournalStatus), item.Status)</b>
+                            </span>
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Status)*@
+                        </td>
+                        <td style="width: 21%">
+                            @Html.DisplayFor(modelItem => item.Reason)
+                        </td>
+                        @*<td style="width: 8%">
+                            @Html.DisplayFor(modelItem => item.RemainderDate)
+                        </td>*@
+                        
+                        
+                    </tr>
+                }
+            </tbody>
+        </table> </div>
+    </small>
+
+
+<div id="createUpdateJournalModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Journal</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="createJournal">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editJournalModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Journal</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editJournal">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" language="javascript">
+    function onClickCreateJournal(projectId) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("CreateJournalForm")',
+            data: { projectId: projectId },
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            success: function (result) {
+                $('#createJournal').html(result);
+                $('#createUpdateJournalModal').modal('show');
+            },
+            error: function (err) {
+                console.log("Error", err)
+            }
+        });
+    }
+
+    function onClickUpdateJournal(publicationid) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("UpdateJournalForm")',
+            data: { publicationid: publicationid },
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            success: function (result) {
+                $('#editJournal').html(result);
+                $('#editJournalModal').modal('show');
+            },
+            error: function (err) {
+                console.log("Error", err)
+            }
+        });
+    }
+</script>

@@ -1,0 +1,439 @@
+﻿@using Enquiry.Web.Dtos
+@model ProjectDetailDto
+@using Enquiry.Web.Extensions
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    string ClientsFiler= @HttpContextAccessor.HttpContext.Session.GetString("ClientsFiler");
+    int balance = 0;
+}
+
+       @* <div class="row lin" style="Color:Darkred">
+            
+            
+             <div class="col-md-3" >
+                <label  for="email"><b>@Model.ProjectRef</b></label>
+               
+            </div>
+            
+            <div class="col-md-4" >
+                <label for="email"><b>@Model.ProjectName</b></label>
+               
+            </div>
+
+             
+        </div>*@
+        
+<style>
+.lin {
+  
+  line-height: 1.2;
+}
+</style> 
+<div class="row lin" >
+    <div class="col-md-8" >
+        @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() || Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+        {
+            <table class="table  table-striped"  >
+                <thead>
+                    <tr style="Color:darkblue">
+                        <th scope="col">#</th>
+                        <th scope="col">Total Payment</th>
+                        <th scope="col">Paid</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">Payment Date</th>
+                        @*<th scope="col">Action</th>*@
+                    </tr>
+                </thead>
+                <tbody >
+                    @foreach (var (item, index) in Model.PaymentDetailDto.WithIndex())
+                    {
+                        balance += item.PartPayment.Value;
+                        <tr>
+                            <td scope="row">@(index + 1)</td>
+                            <td  >@Model.TotalPayment</td>
+                            <td>@item.PartPayment</td>
+                            <td>@(Model.TotalPayment - balance)</td>
+                            <td>@(item.PaymentDate.HasValue ? item.PaymentDate.Value.ToShortDateString() : null)</td>
+                            @*<td>
+                                <a class="btn btn-primary btn-xs" data-id="@item.PaymentId" data-toggle="modal" data-target="#editPaymentModal"
+                           title="Detail" onclick="onClickEditPayment()"><i class="fa fa-table"></i></a>
+                            </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+          <table class="table table-striped"  >
+            <thead>
+                <tr style="Color:darkblue" >
+                    <th scope="col">#</th>
+                    <th scope="col">Phase</th>
+                    <th scope="col">Assigned</th>
+                    <th scope="col">WorkType</th>
+                    <th scope="col">DueDate</th>
+                    <th scope="col">Progress</th>
+                    
+                    @*<th scope="col">Action</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (item, index) in Model.PhaseDetailDto.Reverse().WithIndex())
+                {
+                    <tr>
+                        <td scope="row">@(Model.PhaseDetailDto.Count - index) / <b>@item.PhaseId</b></td>
+                        <td> @item.PhaseName <br/>
+                        @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString() || Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+                        {  
+                            <b>@Html.DisplayFor(modelItem => item.DeadLine)</b>
+                            
+                        }    
+                        </td>
+                       
+                        <td>
+                            @item.TechExpert <br />
+                            @item.TechExpert1 <br />
+                            @item.TechExpert2 <br />
+                            @item.Programmer
+
+                           @* @if (!String.IsNullOrEmpty(@item.TechExpert))
+                            {
+                               &nbsp; @item.TechExpert <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.TechExpert1))
+                            {
+                                &nbsp;@item.TechExpert1 <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.TechExpert2))
+                            {
+                               &nbsp; @item.TechExpert2 <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.Programmer))
+                            {
+                                &nbsp;@item.Programmer
+                            }*@
+                        </td>
+
+                        <td>@item.Remarks <br /> @item.Remarks1 <br /> @item.Remarks2 <br /> @item.Remarks3</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DemoDate)<br/>
+                            @Html.DisplayFor(modelItem => item.DemoDate1)<br/>
+                            @Html.DisplayFor(modelItem => item.DemoDate2)<br/>
+                            @Html.DisplayFor(modelItem => item.DemoDate3)
+                            @*@(item.DemoDate.HasValue ? item.DemoDate.Value.ToShortDateString() : null) <br />
+                            @(item.DemoDate1.HasValue ? item.DemoDate1.Value.ToShortDateString() : null) <br />
+                            @(item.DemoDate2.HasValue ? item.DemoDate2.Value.ToShortDateString() : null) <br/>
+                            @(item.DemoDate3.HasValue ? item.DemoDate3.Value.ToShortDateString() : null)*@
+                        </td>
+                        <td>
+                               @* <input style="height:20px" asp-for="@item.Progress" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="1" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />*@
+                                <input style="height:20px" asp-for="@item.Progress1" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;" 
+                                data-progressid ="2" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />
+
+                                <input style="height:20px" asp-for="@item.Progress2" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="3" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />
+
+                                <input style="height:20px" asp-for="@item.Progress3" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="4" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/>
+
+                            @*@if (!String.IsNullOrEmpty(@item.TechExpert))
+                            {
+                                <input asp-for="@item.Progress"  type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="1" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.TechExpert1))
+                            {
+                                <input asp-for="@item.Progress1" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;" 
+                                data-progressid ="2" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.TechExpert2))
+                            {
+                                <input asp-for="@item.Progress2" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="3" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/> <br />
+                            }
+                            @if (!String.IsNullOrEmpty(@item.Programmer))
+                            {
+                                <input asp-for="@item.Progress3" type="number" max="100" min="5" id="updateProgress" onkeyup="if(value<0 || value>100) value=0;"
+                                data-progressid ="4" data-phaseid ="@item.PhaseId" data-projectid="@Model.ProjectId"/>
+                            }*@
+
+                        </td>
+                        @*<td>
+                            <a class="btn" style="color:lightgoldenrodyellow">@item.Status</a>
+                            
+                            
+                         @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString() || (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access != Enquiry.Web.Enum.Roles.Executive.ToString()))
+                            
+                                {
+                                <a class="btn" style="color:darkgoldenrod" data-id="@item.PhaseId" data-toggle="modal" data-target="#editPhaseModal"
+                           title="Detail" onclick="onClickEditPhase(@item.PhaseId)">AssignTech </a>
+                            }
+                            <br/>
+
+                            @if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Progress.ToString()
+                           && Dept.Equals("BDA"))
+                            {
+                                <a class="btn" style="color:brown" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@item.PhaseId)">Update</a>
+                            }
+
+                            @if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Hold.ToString()
+                           && Dept.Equals("BDA"))
+                            {
+                                <a class="btn" style="color:brown" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@item.PhaseId)">Update</a>
+                            }
+
+                            
+                            else if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Progress.ToString() && Dept.Equals("Tech"))
+                            {
+                                <a class="btn" style="color:brown" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@item.PhaseId)">Update</a>
+                            }
+                            
+                            else
+                            {
+                                <p></p>
+                            }
+                        </td>*@
+                        
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+    <div class="col-md-4">
+        
+
+       @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString() || Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+                     {
+             <table class="table table-striped"  >
+            <thead style="Color:darkblue">
+                 <tr>
+                <th  style="Color:darkblue">Fee Confirmation </th>
+                </tr>
+           </thead>
+            <tbody>
+                <tr><td>
+                   
+
+                @Model.FeeConfirmation
+                        
+                 </td> </tr>    
+             </tbody>
+           </table> }
+        @if (Access != Enquiry.Web.Enum.Roles.Executive.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+        {
+            <div class="btn btn-primary" data-toggle="modal" data-target="#createPaymentModal"
+             title="Detail" onclick="onClickCreatePayment(@Model.ProjectId)">
+                Add Payment
+            </div>
+        }
+
+        @if ((Access != Enquiry.Web.Enum.Roles.Executive.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+        && (Model.PhaseDetailDto.LastOrDefault().Status != Enquiry.Web.Enum.WorkStatus.Progress.ToString() && Model.PhaseDetailDto.LastOrDefault().Status != Enquiry.Web.Enum.WorkStatus.Assigned.ToString()) )
+        {
+            <a class="btn btn-primary" data-toggle="modal" data-target="#createPhaseModal"
+             title="Detail" onclick="onClickCreatePhase(@Model.ProjectId)">
+                Add Phase
+            </a>
+        }
+         
+        @if (Model.PhaseDetailDto.LastOrDefault().Status != Enquiry.Web.Enum.WorkStatus.Publication.ToString())
+        {
+            @if ( Model.PhaseDetailDto.LastOrDefault().Status != Enquiry.Web.Enum.WorkStatus.Hold.ToString())
+            {
+
+                @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() || (Dept == Enquiry.Web.Enum.Department.BDA.ToString() && Access == Enquiry.Web.Enum.Roles.TeamLead.ToString()))
+
+                {
+                    <a class="btn btn-primary"  data-id="@Model.PhaseDetailDto.LastOrDefault().PhaseId" data-toggle="modal" data-target="#editPhaseModal"
+                           title="Detail" onclick="onClickEditPhase(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Assign </a>
+                }
+
+            }
+        }
+
+                @*@if (Dept.Equals("BDA") && Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Hold.ToString())
+                            
+                                {
+                                 <a class="btn btn-primary"  data-id="@Model.PhaseDetailDto.LastOrDefault().PhaseId" data-toggle="modal" data-target="#editPhaseModal"
+                           title="Detail" onclick="onClickEditPhase(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Assign </a>
+                            }*@
+                
+               @* @if (Access != Enquiry.Web.Enum.Roles.Executive.ToString() && Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Progress.ToString())
+                            
+                                {
+                                 <a class="btn btn-primary"  data-id="@Model.PhaseDetailDto.LastOrDefault().PhaseId" data-toggle="modal" data-target="#editPhaseModal"
+                           title="Detail" onclick="onClickEditPhase(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Assign </a>
+                            }*@
+        
+
+                            @*@if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Hold.ToString()
+                           && Dept.Equals("BDA"))
+                            {
+                                <a class="btn  btn-primary" style="color:brown" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto)">Update</a>
+                            }*@
+
+                            @if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Hold.ToString()
+                           && Dept.Equals("BDA"))
+                           
+                            {
+                                <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                            }
+                            @*else if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Publication.ToString())
+                           
+                            {
+                                <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                            }*@
+                            else if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Assigned.ToString() && Dept.Equals("Tech"))
+
+                            {
+                                if (Access.Equals("Manager"))
+                                {
+                                     <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                                               title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                                }
+                               
+                            }
+
+                            
+                            else if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Progress.ToString() && Dept.Equals("Tech"))
+                            {
+                                 if (!Access.Equals("Manager"))
+                                {
+                                     <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                                               title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                                }
+                            }
+                            else if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Progress.ToString() && Dept.Equals("Programming"))
+                            {
+                                 if (!Access.Equals("Manager"))
+                                {
+                                     <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                                               title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                                }
+                            }
+                            
+                            @*@if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Publication.ToString()
+                           && Dept.Equals("BDA"))
+                           
+                            {
+                                <a class="btn btn-primary" style="color:lightyellow" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="Detail" onclick="onClickEditPhaseHold(@Model.PhaseDetailDto.LastOrDefault().PhaseId)">Update</a>
+                            }*@
+                
+            <div class="card">
+                 <h5 class="card-header" style="color:red" >@Model.PhaseDetailDto.LastOrDefault().Status    </h5>
+                                
+                
+                <div>
+                @foreach (var item in Enumerable.Reverse(Model.PhaseHistoryDto))
+                    {
+                         <div class="card" >
+                         @item.EmpName on @Html.DisplayFor(x =>item.CreatedDate)
+                        <b>@item.Comments</b>
+                        </div>
+                    }
+                                      
+                </div>
+                @if (Model.PhaseDetailDto.LastOrDefault().Status == Enquiry.Web.Enum.WorkStatus.Hold.ToString())
+                {
+                   <b class="card-header" style="color:darkred" >@Html.DisplayFor(x =>Model.PhaseDetailDto.LastOrDefault().NextAppoinment)</b>
+                }
+            </div>  
+            
+    </div>
+   
+
+
+ </div>
+ 
+<div id="editPaymentModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Payment</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editPayment">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="editPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editPhase">
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div id="createPaymentModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Payment</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="createPayment">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="createPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Create Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="createPhase">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="holdPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Complete Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="holdPhase">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="editHoldPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editHoldPhase">
+            </div>
+        </div>
+    </div>
+</div>*@

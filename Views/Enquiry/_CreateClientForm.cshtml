@@ -1,0 +1,65 @@
+﻿@using Enquiry.Web.Dtos
+@model CreateClientDto
+
+
+<form asp-action="CreateClient" asp-controller="Enquiry" data-ajax="true" data-ajax-method="post" data-ajax-success="OnCreateClientAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.ClientName, new { @class = "col-sm-4 col-form-label" })
+            <input asp-for="@Model.ClientName" placeholder="Client Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="ClientName"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.ContactNo, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.ContactNo" placeholder="Enter Address" class="form-control" />
+            <span class="text-danger" asp-validation-for="ContactNo"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Email, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.Email" placeholder="Enter Address" class="form-control" />
+            <span class="text-danger" asp-validation-for="Email"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Domain, new { @class = "col-sm-2 col-form-label" })
+            <textarea asp-for="@Model.Domain" placeholder="Enter Domain" class="form-control" ></textarea>
+            <span class="text-danger" asp-validation-for="Domain"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.BDARemarks, new { @class = "col-form-label" })
+            <textarea asp-for="@Model.BDARemarks" placeholder="Enter Remarks" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="BDARemarks"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.PaymentRemarks, new { @class = "col-form-label" })
+            <textarea asp-for="@Model.PaymentRemarks" placeholder="Enter Payment Remarks" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="PaymentRemarks"></span>
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.AppoinmentDate, new { @class = "col-sm-2 col-form-label" })
+            <input asp-for="@Model.AppoinmentDate" placeholder="Appoinment Date" class="form-control" style="margin-top:10px;" />
+            <span class="text-danger" asp-validation-for="AppoinmentDate"></span>
+        </div>
+        <div class="col-sm-4">
+           
+
+ @Html.DropDownListFor(model => @model.TechExpert, (IEnumerable<SelectListItem>)ViewBag.TechExpert, "---Select Tech---", new { @class = "form-control col-md-3" })
+                    
+        </div>           
+
+        <div class="col-sm-4">
+            <div class="checkbox">
+                @Html.CheckBoxFor(model => model.IsTechAppoinment)
+                @Html.LabelFor(c => c.IsTechAppoinment)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-lg btn-primary" style="">Create</button>
+        </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />
+

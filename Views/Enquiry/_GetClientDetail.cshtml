@@ -1,0 +1,154 @@
+﻿@using Enquiry.Web.Dtos
+@model ClientDetailDto
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+}
+
+<div class="container">
+    <!-- Title -->
+    <input value="@Model.EnquiryId" id="enquiryId" type="hidden" />
+
+
+    <div class="d-flex justify-content-between align-items-center py-2">
+
+
+        <h4  style="color:darkred">
+            @Model.ClientName <button style="border: none;">~</button> @Model.Domain  <button style="border: none;">~</button>  @Model.Contact
+        </h4>
+
+    </div>
+    <!-- Main content -->
+    <div class="row">
+        <div class="col-lg-8">
+                                <textarea placeholder="Enter Your Comment" class="form-control" id="addCommentValue" required>@Model.LastComment</textarea>
+                                <span class="text-danger" id="errorComment"></span>
+                                
+                                <button type="submit" id="onSubmitAddComment" class="btn btn-sm btn-primary float-end">Update</button>
+                              <br />
+                                <div class="form-check form-switch" >
+                                @*<label class="form-check-label h6">only Comments</label>*@
+                                <input class="form-check-input h5" id="isCommentSelected" type="checkbox" onclick="getEnquiryHistory()" checked hidden/>
+                                 </div>
+                              
+                            <div style="height:300px; overflow:scroll" id="clientHistory"></div>
+        </div>
+
+        
+
+
+       
+
+        <div class="col-lg-4">
+            <div class="form-check form-switch">
+                 @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                <label class="form-check-label h6" for="flexSwitchCheckChecked">
+                    
+                        Enable Tech Appointment
+                    
+
+                </label>
+                    }
+
+                    @if (Dept == Enquiry.Web.Enum.Department.Tech.ToString())
+                    {
+                <label class="form-check-label h6" for="flexSwitchCheckChecked">
+                    
+                        Disable Tech Appointment
+                    
+
+                </label>
+                    }
+               
+                <input class="form-check-input h5" type="checkbox" id="isTechAppoinmentSelected"
+                       value="@Model.IsTechAppoinment" checked="@Model.IsTechAppoinment" />
+           
+                <span class="btn ">
+                    @Html.EditorFor(model => model.AppoinmentDate, new { htmlAttributes = new {@class = "form-control", @id = "appoinmentDate" } })
+                    <button class="btn btn-sm btn-primary float-end" onclick="ChangeAppoinmentDate()">Apply</button>
+                </span>
+                
+            </div>
+            
+            
+                
+                
+            
+
+            
+
+            <table>
+            
+                @if ( Access == Enquiry.Web.Enum.Roles.Manager.ToString() || Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                {
+
+                    <tr>
+                        <td colspan="2">Tech</td>
+
+                        <td>@Html.DropDownListFor(model => @model.TechId, (IEnumerable<SelectListItem>)ViewBag.TechExpert, "Not Assigned", new { @class = "form-control col-md-3", @id = "ddlTech", onchange = "return ChangeTech()" })</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">Tech</td>
+                        <td class="h6">
+                            @Html.HiddenFor(model => model.TechId, new { @id = "ddlTech" })
+                            @Html.DisplayFor(model => model.TechName)
+                        </td>
+                    </tr>
+                }
+                    @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                {
+                    <tr>
+                        <td colspan="2">BDA</td>
+                        <td>@Html.DropDownListFor(model => @model.BDAId, (IEnumerable<SelectListItem>)ViewBag.BDAList, "Not Assigned", new { @class = "form-control col-md-3", @id = "ddlBda", onchange = "return ChangeBda()" })</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">BDA</td>
+                        <td class="h6">
+                            @Html.HiddenFor(model => model.BDAId, new { @id = "ddlBda" })
+                            @Html.DisplayFor(model => model.BDAName)
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <b style="color:darkred">
+                
+                    Enquiry Date: @Html.DisplayFor(x => x.EnquiryDate)
+                </b><br />
+                <b style="color:darkred">
+                Scholar id:  @Model.EnquiryRef
+                </b>
+
+
+
+
+            @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+            {
+                
+                <div class="card-body">Payment info
+                    <textarea style="height:100px" placeholder="@Model.PaymentRemarks" class="form-control" id="paymentRemarksValue" required>@Model.PaymentRemarks</textarea>
+                    <span class="text-danger" id="errorMessage"></span>
+                    <button type="submit" id="onSubmitPaymentRemarks" class="btn btn-sm btn-primary float-end">Update</button>
+                </div>
+                <div class="form-check form-switch">
+                <label class="form-check-label h6" for="flexSwitchCheckChecked">Registered</label>
+                <input class="form-check-input h5" type="checkbox" id="onClientRegistred"
+                       value="@Model.Registered" checked="@Model.Registered" />
+            </div>
+            }
+
+
+            
+
+        </div>
+
+    </div>
+</div>

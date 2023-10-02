@@ -1,0 +1,346 @@
+﻿@using Enquiry.Web.Dtos
+@model IList<ProjectListDto>
+@using Enquiry.Web.Extensions
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    string ClientsFiler= @HttpContextAccessor.HttpContext.Session.GetString("ClientsFiler");
+}
+
+<div class="row">
+    <br />
+    
+
+
+
+
+    <div class="card-body" style="margin-top:50px">
+
+      
+          <script>
+                window.onmousedown = function (e) {
+    var el = e.target;
+    if (el.tagName.toLowerCase() == 'option' && el.parentNode.hasAttribute('multiple')) {
+        e.preventDefault();
+
+        // toggle selection
+        if (el.hasAttribute('selected')) el.removeAttribute('selected');
+        else el.setAttribute('selected', '');
+
+        // hack to correct buggy behavior
+        var select = el.parentNode.cloneNode(true);
+        el.parentNode.parentNode.replaceChild(select, el.parentNode);
+    }
+}
+            </script>
+
+
+        <select id="statusFilter" class="col-lg-10" style="color:darkred; font-weight: bold">
+
+             
+            
+           
+             @if(Access.Equals("Manager"))
+                    {
+                        <option value="">All</option>
+                        <option value="Assigned">Assigned</option>
+                        <option value="Progress"  >Progress</option>
+                        <option value="Hold">Hold</option>
+                        <option value="Publication">Publication</option>
+                        <option value="Completed">Completed</option>
+                        
+                    }
+              @if(Dept.Equals("BDA") && Access.Equals("Team Lead"))
+                    {
+                         <option value="">All</option>
+                         <option value="Hold">Hold</option>
+                         <option value="Progress">Progress</option>
+                         <option value="Assigned">Assigned</option>
+                         <option value="Publication">Publication</option>
+                        <option value="Completed">Completed</option>
+                        
+                    }
+                @if((Dept.Equals("Tech") && Access.Equals("Team Lead")) || (Dept.Equals("Tech") && Access.Equals("Executive")))
+                    {
+                         
+                        
+                         <option value="Progress"  >Progress</option>
+                          <option value="Hold">Hold</option>
+                        
+                        
+                    }
+                    @if((Dept.Equals("Programming") && Access.Equals("Team Lead")) || (Dept.Equals("Programming") && Access.Equals("Executive")))
+                    {
+                         <option value="Progress"  >Progress</option>
+                         <option value="Hold">Hold</option>
+                        
+                        
+                        
+                    }
+             
+             
+
+             
+            @*<option value="Progress"  >Progress</option>
+            <option value="Hold">Hold</option>
+            <option value="Publication">Publication</option>
+            <option value="Completed">Completed</option>*@
+        </select>
+         
+        <table id="dataTableGrid" class="stripe row-border order-column">
+            <thead class="thead-dark">
+                <tr style="width: 100%">
+                    <th style="width: 2%" >Update</th>
+                    <th >Client</th>
+                    
+                    
+                   
+                    <th >ProjectName</th>
+                    <th >PhaseName</th>
+                   @if (Access.Equals("Manager"))
+                    
+                        {
+                            <th >Assigned</th>
+                        }
+                        @if (Access.Equals("Team Lead") && Dept.Equals("BDA"))
+                    
+                        {
+                            <th >Assigned</th>
+                        }
+                        
+                   
+                   
+                   @* @if(Dept.Equals("Tech") || Dept.Equals("Programming")) 
+                    {
+                        @if (Access.Equals("Manager") || Access.Equals("Team Lead"))
+                        {
+                            <th >Assigned</th>
+                        }
+                        
+                    }*@
+                    <th >Update</th>
+                    <th  > <span style="color:brown">DueDate</span><br />
+                         @if (Access.Equals("Manager"))
+                        {
+                           
+                            <span style="color:lightblue"> DeadLine</span> 
+                           
+                        }
+                    </th>
+                     
+                    <th style="display:none">Status</th>
+                                              
+
+                        
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="width: 100%" >
+                        <td style="width: 2%" >
+                           @* //<a class="btn btn-info btn-xs" title="Create Project" onclick="onClickCreateProject(@item.EnquiryId)"><i class="fa fa-plus-square" aria-hidden="true"></i></a>*@
+                            <a class="btn btn-primary btn-xs"  data-id="@item.EnquiryId" data-projectid="@item.ProjectId" data-toggle="modal" data-target="#registeredClientDetailModal" 
+                            title="Project Detail" id="onClickRegisteredClientDetail"><i class="fa fa-table" aria-hidden="true"></i></a>
+                                                  
+                        
+                       @* @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString() || (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access != Enquiry.Web.Enum.Roles.Executive.ToString()))
+                            
+                                {
+                                <a class="btn" style="color:blue" data-id="@item.PhaseId" data-toggle="modal" data-target="#editPhaseModal"
+                           title="Assign Technical Expert" onclick="onClickEditPhase(@item.PhaseId)">AssignTech </a>
+                            }
+                            
+
+                            <br/>
+                            
+                            @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString() || (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access != Enquiry.Web.Enum.Roles.Executive.ToString()))
+                            {
+                                <a class="btn" style="color:brown" data-toggle="modal" data-target="#editHoldPhaseModal"
+                           title="If Phase Completed" onclick="onClickEditPhaseHold(@item.PhaseId)">Update/Done</a>
+                            }*@
+
+                            
+
+                            
+                           
+                            
+                           
+                        
+                        
+                        </td>
+
+                        <td >
+                            @Html.DisplayFor(modelItem => item.EnquiryRef) <br/> 
+                             @Html.DisplayFor(modelItem => item.ClientName)<br/>
+                             @if(Dept.Equals("BDA") && Access.Equals("Manager"))
+                                {
+                            
+                                @Html.DisplayFor(modelItem => item.Contact)
+                                }
+                        </td>
+                        
+                        
+                       
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhaseName)
+                        </td>
+                        @if (Access.Equals("Manager"))
+                        {
+                               <td>
+                                <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech)</span><br/>
+                                 <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech1)</span><br/>
+                                  <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech2)</span><br/>
+                                   <span style="color:darkblue">   @Html.DisplayFor(modelItem => item.AssignedTech3)</span>
+                               </td> 
+                        }
+                         @if (Access.Equals("Team Lead") && Dept.Equals("BDA"))
+                        {
+                               <td>
+                                <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech)</span><br/>
+                                 <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech1)</span><br/>
+                                  <span style="color:darkred">   @Html.DisplayFor(modelItem => item.AssignedTech2)</span><br/>
+                                   <span style="color:darkblue">   @Html.DisplayFor(modelItem => item.AssignedTech3)</span>
+                               </td> 
+                            }
+                        
+                        
+                        @*@if(Dept.Equals("Tech") || Dept.Equals("Programming")) 
+                        {
+                        @if (Access.Equals("Manager") || Access.Equals("Team Lead"))
+                        {
+                               <td>
+                                <span>
+                                
+                                @Html.DisplayFor(modelItem => item.AssignedTech)<br/>
+                                @Html.DisplayFor(modelItem => item.AssignedTech1)<br/>
+                                @Html.DisplayFor(modelItem => item.AssignedTech2)<br/>
+                                @Html.DisplayFor(modelItem => item.AssignedTech3)</span>
+                            </td> 
+                            }
+                            
+                         }*@
+                          <td >@Html.DisplayFor(modelItem => item.Comment)
+                              <br/>
+                            <small>
+                                @Html.DisplayFor(modelItem => item.NextAppoinment)
+                            </small>
+                        </td>
+
+                          <td>
+                              @if (!Access.Equals("Manager") && Dept.Equals("Tech"))
+                                 {
+                                     <span style="color:darkred"> @Html.DisplayFor(modelItem => item.DemoDate)</span><br/>
+                                 }
+
+                               @if (!Access.Equals("Manager") && Dept.Equals("Programming"))
+                                 {
+                                     <span style="color:darkblue"> @Html.DisplayFor(modelItem => item.DemoDate3)</span>
+                                 }
+
+                                @if (Access.Equals("Team Lead") && Dept.Equals("BDA"))
+
+                                {
+                                     <span style="color:darkred"> @Html.DisplayFor(modelItem => item.DemoDate)</span><br/>
+                                     @if (item.DemoDate != item.DemoDate3)
+                                     {
+                                      <span style="color:darkblue"> @Html.DisplayFor(modelItem => item.DemoDate3)</span><br/>
+                                     }
+                                    <span style="color:lightblue"> @Html.DisplayFor(modelItem => item.DeadLine)</span> 
+                           
+                                 }
+                                 @if (Access.Equals("Manager"))
+
+                                {
+                                     <span style="color:darkred"> @Html.DisplayFor(modelItem => item.DemoDate)</span><br/>
+                                     @if (item.DemoDate != item.DemoDate3)
+                                     {
+                                      <span style="color:darkblue"> @Html.DisplayFor(modelItem => item.DemoDate3)</span><br/>
+                                     }
+                                    <span style="color:lightblue"> @Html.DisplayFor(modelItem => item.DeadLine)</span> 
+                           
+                                 }
+                         
+                                   @if(Dept.Equals("BDA") && Access.Equals("Manager"))
+                                   { 
+                                 <small>@item.ProjectId</small>
+                                   }
+                                   @Html.DisplayFor(modelItem => item.Status)
+                            
+
+                        </td>
+                       
+                        
+                        <td style="display:none">
+                            @Html.DisplayFor(modelItem => item.Status)
+                            
+
+                            
+                        </td>
+                         
+                        
+                             
+                         
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="registeredClientDetailModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-fullscreen py-2 pe-4">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Detail</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">Close&nbsp;&times;</button>
+            </div>
+            <div class="modal-body" id="registeredClientDetail">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="createProjectModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-fullscreen py-2 pe-4">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">Close&nbsp;&times;</button>
+            </div>
+            <div class="modal-body" id="createProject">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="editPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editPhase">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editHoldPhaseModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color:cadetblue">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Phase</h4>
+                <button type="button" class="close col-1 bg-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editHoldPhase">
+            </div>
+        </div>
+    </div>
+</div>*@

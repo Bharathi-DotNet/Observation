@@ -1,0 +1,36 @@
+﻿@using Enquiry.Web.Dtos
+@model IList<VisitorsListDto>
+
+<div class="row">
+    <br />
+
+    <div class="card-body" style="margin-top:50px">
+        <table id="dataTableGrid" class="stripe row-border order-column">
+            <thead class="thead-dark">
+                <tr style="width: 100%">
+                    <th style="width: 5%">Employee</th>
+                    <th style="width: 5%">Network</th>
+                    <th style="width: 10%">Login Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="width: 100%">
+
+                        <td style="width: 5%">
+                            @Html.DisplayFor(modelItem => item.EmployeeName)
+                        </td>
+                       
+                        <td style="width: 10%">
+                            @Html.DisplayFor(modelItem => item.NetworkId)
+                        </td>
+                        <td style="width: 10%">
+                            @Html.DisplayFor(modelItem => item.LoginTime)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿    <nav class="fixed-nav-bar"> @await Html.PartialAsync("_Nav") </nav>
+
+    <div class="row" id="divVisitorBody"></div>
+
+     @section Scripts{
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            getVisitor();
+
+        });
+
+        function getVisitor() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("Vistors")',
+                data: '',
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (result) {
+                    $('#divVisitorBody').html(result);
+                    //onCompletePrepareDatatable();
+                },
+                error: function (err) {
+                    console.log("Error", err)
+                }
+            });
+        }
+
+        function onCompletePrepareDatatable() {
+            $('#dataTableGrid').DataTable({
+                paging: true,
+                //fixedColumns: {
+                //    left: 1
+                //}
+            });
+
+            FilterStatuses();
+        }
+
+
+    </script>
+}

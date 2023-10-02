@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>\\mtm\Sharing Temp\Publish</_PublishTargetUrl>
+    <History>True|2023-01-25T15:37:14.0407149Z;True|2023-01-25T20:28:38.3784105+05:30;True|2023-01-25T20:05:56.6073428+05:30;True|2023-01-25T19:46:09.8643812+05:30;True|2023-01-23T18:00:30.3082216+05:30;True|2023-01-23T17:51:18.9296673+05:30;True|2023-01-16T12:01:46.7639753+05:30;True|2022-12-15T12:18:04.5658685+05:30;True|2022-12-15T10:52:56.1588084+05:30;True|2022-12-14T19:01:17.2413291+05:30;True|2022-12-14T18:45:12.6196624+05:30;True|2022-12-14T18:29:52.6003874+05:30;True|2022-12-14T18:24:16.8320971+05:30;True|2022-12-14T18:22:50.0850395+05:30;True|2022-12-14T18:17:42.4181266+05:30;True|2022-12-14T18:12:16.6121565+05:30;True|2022-12-14T18:05:13.9282809+05:30;True|2022-12-14T17:58:08.1564999+05:30;True|2022-12-14T17:36:11.9635532+05:30;True|2022-12-14T17:32:26.8910333+05:30;False|2022-12-14T17:30:42.1024671+05:30;True|2022-12-14T17:02:54.8065347+05:30;True|2022-12-14T16:58:55.8038913+05:30;True|2022-12-14T16:56:25.1737605+05:30;True|2022-12-13T18:39:18.4248374+05:30;True|2022-12-13T18:36:03.8754300+05:30;True|2022-12-13T18:18:11.4389820+05:30;False|2022-12-13T18:15:51.7460224+05:30;True|2022-06-22T11:52:25.6456401+05:30;</History>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="Enquiry.Web.Models.ApplicationDbContext">
+      <Value>server=localhost%3b database=kenfra.enquiry%3b user=root%3b password=qwertyuiop%3b ConvertZeroDateTime=True</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

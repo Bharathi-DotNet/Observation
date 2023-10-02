@@ -1,0 +1,57 @@
+﻿@using Enquiry.Web.Dtos
+@model EditPhaseOnHoldDto
+@using Enquiry.Web.Extensions
+@inject IHttpContextAccessor HttpContextAccessor
+
+    @{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    
+
+    int phaseId = ViewBag.PhaseId;
+}
+
+<form asp-action="EditPhaseOnHold" asp-controller="Project" asp-route-phaseId="@phaseId" data-ajax="true" data-ajax-method="post" data-ajax-success="OnEditPhaseOnHoldAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div >
+            UpdateComments
+            <textarea asp-for="@Model.Comment" placeholder="Remarks" class="form-control"></textarea>
+            <span class="text-danger" asp-validation-for="Comment"></span>
+        </div>
+        @if (Dept.Equals("BDA"))
+        {
+            <div class="col-md-4">
+                
+            <input type="date" asp-for="@Model.NextAppoinment" class="form-control" />
+            <span class="text-danger" asp-validation-for="NextAppoinment"></span>
+        </div>
+        }
+        <div class="col-md-10">
+             @if (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access != Enquiry.Web.Enum.Roles.Manager.ToString())
+            {
+                @Html.CheckBoxFor(model => model.IsCompletedphaseqc)
+                <b style="Color:darkred"> Phase Completed</b>
+            }
+             @if (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+            {
+                @Html.CheckBoxFor(model => model.IsCompletedphase)
+                <b style="Color:darkred"> Phase Completed</b>
+            }
+            @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+             {
+            @Html.CheckBoxFor(model => model.IsCompleted)
+                <b style="Color:darkred"> Project Completed</b>
+             }
+             <button type="submit" class="btn btn-sm btn-primary">Must Update with Due Date</button>
+        </div>
+        <div class="col-md-2">
+
+            
+        </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />

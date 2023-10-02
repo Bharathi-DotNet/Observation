@@ -1,0 +1,228 @@
+﻿@using Enquiry.Web.Dtos
+@using Enquiry.Web.Extensions
+@model IList<ClientListDto>
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string Access = @HttpContextAccessor.HttpContext.Session.GetString("Role");
+    string Dept = @HttpContextAccessor.HttpContext.Session.GetString("Dept");
+    string ClientsFiler= @HttpContextAccessor.HttpContext.Session.GetString("ClientsFiler");
+}
+@if (Dept == Enquiry.Web.Enum.Department.Tech.ToString() && Access == Enquiry.Web.Enum.Roles.Executive.ToString())
+{
+<meta http-equiv = "refresh" content = "0; url = /project" />
+}
+@if (Dept == Enquiry.Web.Enum.Department.Programming.ToString())
+{
+<meta http-equiv = "refresh" content = "0; url = /project" />
+}
+@if (Dept == Enquiry.Web.Enum.Department.Publication.ToString() && Access != Enquiry.Web.Enum.Roles.Manager.ToString())
+{
+<meta http-equiv = "refresh" content = "0; url = /publication" />
+}
+@if (Dept == Enquiry.Web.Enum.Department.Publication.ToString() && Access == Enquiry.Web.Enum.Roles.Manager.ToString())
+{
+<meta http-equiv = "refresh" content = "0; url = /project" />
+}
+<div class="row">
+    <br />
+    @* <div style="margin-top:70px;">
+    @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+    {
+    <a class="btn btn-info btn-sm onClickCreateClient col-1" data-toggle="modal" data-target="#createClientModal" title="Add"><i class="fa fa-add"></i></a>
+
+    }
+    </div>*@
+
+    <div class="card-body" style="margin-top:50px">
+@*        <div class="form-check form-switch">
+            <label class="form-check-label h6" >Future</label>
+            <input class="form-check-input h5" type="checkbox" id="isFutureSelected" />
+        </div>*@
+
+        <div class="clearfix">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isAllSelected" value="A"
+                @String.Format("{0}", ClientsFiler.Equals("A")?"checked":"" ) onchange="FilterClientsData(this)"/>
+              <label class="form-check-label" for="isAllSelected">All</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isPastSelected" value="P"
+                @String.Format("{0}", ClientsFiler.Equals("P")?"checked":"" ) onchange="FilterClientsData(this)" />
+              <label class="form-check-label" for="isPastSelected">Past</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isPastWeekSelected" value="L"
+                @String.Format("{0}", ClientsFiler.Equals("L")?"checked":"" ) onchange="FilterClientsData(this)" />
+              <label class="form-check-label" for="isPastWeekSelected">Last Week</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isTodaySelected" value="T"
+                @String.Format("{0}", ClientsFiler.Equals("T")?"checked":"" ) onchange="FilterClientsData(this)" />
+              <label class="form-check-label" for="isTodaySelected">Today</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isFutureRadioSelected" value="F" 
+                @String.Format("{0}", ClientsFiler.Equals("F")?"checked":"" ) onchange="FilterClientsData(this)" />
+              <label class="form-check-label" for="isFutureRadioSelected">Future</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radiogrpClientFilter" id="isTechEnabled" value="E" 
+                @String.Format("{0}", ClientsFiler.Equals("E")?"checked":"" ) onchange="FilterClientsData(this)" />
+              <label class="form-check-label" for="isTechEnabled">Tech Enabled</label>
+            </div>
+        </div>
+
+        <table id="dataTableGrid" class="stripe row-border order-column">
+            <thead class="thead-dark">
+                <tr style="width: 100%">
+                    <th style="width: 2%">Update</th>
+                    <th style="width: 10%" >Name</th>
+                    
+                    <th style="width: 18%" >Domain</th>
+                    
+                    <th style="width: 25%" >BDAComments</th>
+                    <th style="width: 25%" >TechComments</th>
+                    @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <th style="width: 15%" >Payments</th>
+                    }
+                    <th style="width: 5%" >Appoinment</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="width: 100%">
+                        <td style="width: 2%">
+                            <a class="btn btn-primary btn-xs onClickClientDetail" data-id="@item.EnquiryId" data-toggle="modal" data-target="#clientDetailModal" title="Detail"><i class="fa fa-table"></i></a>
+                            @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                            {
+                                <a class="btn btn-success btn-xs onClickEditClient" data-id="@item.EnquiryId" data-toggle="modal" data-target="#editClientModal" title="Edit"><i class="fa fa-edit"></i></a>
+                                //<a class="btn btn-danger btn-xs onClickDeleteClient" data-id="@item.EnquiryId" data-name="@item.ClientName" data-toggle="modal" data-target="#deleteClientModal" title="Delete"><i class="fa fa-trash"></i></a>
+
+                            }
+                        </td>
+
+                        <td style="width: 10%" >
+                            @Html.DisplayFor(modelItem => item.ClientName) <br/>
+                             @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() && Dept == Enquiry.Web.Enum.Department.BDA.ToString() )
+                        {
+                           
+                                @Html.DisplayFor(modelItem => item.Contact)
+                            
+                        }
+                        <br/>
+                        <span style="color:darkgoldenrod"> @Html.DisplayFor(modelItem => item.EnquiryDate)</span>
+                        </td>
+                       
+                        <td style="width: 18%" >
+                            @Html.DisplayFor(modelItem => item.Domain)
+                        </td>
+                        
+                        <td style="width: 25%" > 
+
+                            @*@Html.DisplayFor(modelItem => item.BDARemarks)*@
+                            @Html.Raw(item.BDARemarks.Replace(Environment.NewLine, "<br/>"))
+                            <br/>
+                            @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                            {
+                                @if (@HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") == item.BDA)
+                                {
+                                    <b style="color:darkred" font-weight-bold">@Html.DisplayFor(modelItem => item.BDA)</b>
+
+                                }
+                                else if (@HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") != item.BDA)
+                                {
+                                     <span style="color:darkblue" font-weight-bold">@Html.DisplayFor(modelItem => item.BDA)</span>
+                                }
+                            }
+                        </td>
+                        <td style="width: 25%">
+                           @* @Html.DisplayFor(modelItem => item.TechRemarks)*@
+                            @*@Html.DisplayFor(modelItem => item.TechExperts)*@
+                            @Html.Raw(item.TechRemarks.Replace(Environment.NewLine, "<br/>"))
+                             <br/>
+                            @if (Access == Enquiry.Web.Enum.Roles.Manager.ToString() || (Dept == Enquiry.Web.Enum.Department.BDA.ToString() && Access == Enquiry.Web.Enum.Roles.TeamLead.ToString() ))
+                            {
+                                @if (@HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") == item.TechExperts)
+                                {
+                                    <b style="color:darkred" font-weight-bold">@Html.DisplayFor(modelItem => item.TechExperts)</b>
+
+                                }
+                                else if (@HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") != item.TechExperts)
+                                //(String.IsNullOrWhiteSpace(item.TechRemarks))
+                                {
+                                     <span style="color:darkblue" font-weight-bold">@Html.DisplayFor(modelItem => item.TechExperts)</span>
+                                }
+                            }
+                        </td>
+                        @if (Dept == Enquiry.Web.Enum.Department.BDA.ToString())
+                    {
+                        <td style="width: 15%">
+                            @Html.DisplayFor(modelItem => item.PaymentRemarks)
+                        </td>
+                    }
+                        <td style="width: 5%" >
+                             
+                            @if (item.IsTechAppoinment && @HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") == item.TechExperts)
+                            {
+                                <b style="color:maroon">@Html.DisplayFor(modelItem => item.AppoinmentDate)</b>
+                            }
+                            @if (item.IsTechAppoinment && @HttpContextAccessor.HttpContext.Session.GetString("EmployeeName") != item.TechExperts)
+                            {
+                                <b style="color:darkblue">@Html.DisplayFor(modelItem => item.AppoinmentDate)</b>
+                            }
+                            @if(!item.IsTechAppoinment)
+                            {
+                                  
+                                @Html.DisplayFor(modelItem => item.AppoinmentDate)
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="createClientModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Registration</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">Close&nbsp;&times;</button>
+            </div>
+            <div class="modal-body" id="createClientForm">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editClientModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Registration</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">Close&nbsp;&times;</button>
+            </div>
+            <div class="modal-body" id="editClientForm">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="clientDetailModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h4 class="modal-title">Enquiry Detail</h4>
+                <button type="button" class="btn close btn-danger" id="modalOnCloseClientDetail">Close&nbsp;&times;</button>
+            </div>
+            <div class="modal-body" id="clientDetail" >
+            </div>
+        </div>
+    </div>
+</div>
+

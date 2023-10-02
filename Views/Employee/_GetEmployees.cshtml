@@ -1,0 +1,87 @@
+﻿@using Enquiry.Web.Dtos
+@model IList<EmployeeListDto>
+
+<div class="row">
+    <br />
+    <div style="margin-top:70px;">
+        <a class="btn btn-info btn-sm onClickCreateEmployee col-1" data-toggle="modal" data-target="#createEmployeeModal" title="Add"><i class="fa fa-add"></i></a>
+    </div>
+    <div class="card-body" style="margin-top:-20px">
+        <br />
+        <table id="dataTableGrid" class="stripe row-border order-column">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Action</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Role</th>
+                    <th>Identity No</th>
+                    <th>Contact No</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-primary btn-xs onClickEmployeeDetail" data-toggle="modal" data-target="#employeeDetailModal" title="Detail"><i class="fa fa-table"></i></a>
+                            <a class="btn btn-success btn-xs onClickEditEmployee" data-id="@item.EmpId" data-toggle="modal" data-target="#editEmployeeModal" title="Edit"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-danger btn-xs onClickDeleteEmployee" data-id="@item.EmpId" data-name="@item.EmployeeName" title="Delete"><i class="fa fa-trash"></i></a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmployeeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeptName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IdentityNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ContactNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmailId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="createEmployeeModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Employee Enrollment</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="createEmployeeForm">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editEmployeeModal" class="modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Registration</h4>
+                <button type="button" class="btn close btn-danger" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="editEmployeeForm">
+            </div>
+        </div>
+    </div>
+</div>
+

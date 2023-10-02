@@ -1,0 +1,92 @@
+﻿@using Enquiry.Web.Dtos
+@model CreateProjectDto
+
+<div class="card" style="margin-top:5%">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-3">
+                <h5 class="card-title">@Model.ClientDetailsDto.ClientName</h5>
+            </div>
+            <div class="col-md-3">
+                <h5 class="card-title">@Model.ClientDetailsDto.EnquiryRef</h5>
+            </div>
+            <div class="col-md-6">
+                <blockquote class="blockquote mb-0">
+                    <p>@Model.ClientDetailsDto.Domain</p>
+                    <footer class="blockquote-footer"><cite title="Source Title">@Model.ClientDetailsDto.Contact </cite></footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <form asp-action="CreateProject" asp-controller="Project" method="post" >
+                @Html.HiddenFor(model => model.ClientDetailsDto.EnquiryId)
+                @Html.HiddenFor(model => model.ClientDetailsDto.TechId)
+                @Html.HiddenFor(model => model.ClientDetailsDto.EnquiryRef)
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.FeeConfirmation, new { @class = "col-sm-6 col-form-label" })
+                        <textarea asp-for="@Model.FeeConfirmation" style="height:200px" placeholder="Fee Confirmation" class="form-control"></textarea>
+                        <span class="text-danger" asp-validation-for="FeeConfirmation"></span>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.ProjectName, new { @class = "col-sm-4 col-form-label" })
+                                <input asp-for="@Model.ProjectName" placeholder="Project Name" class="form-control" />
+                                <span class="text-danger" asp-validation-for="ProjectName"></span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.RegistrationDate, new { @class = "col-sm-5 col-form-label" })
+                                <input asp-for="@Model.RegistrationDate" class="form-control" />
+                                <span class="text-danger" asp-validation-for="RegistrationDate"></span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.TotalPayment, new { @class = "col-sm-4 col-form-label" })
+                                <input asp-for="@Model.TotalPayment" placeholder="Total Payment" class="form-control" />
+                                <span class="text-danger" asp-validation-for="TotalPayment"></span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.CreatePayment.PartPayment, new { @class = "col-sm-4 col-form-label" })
+                                <input asp-for="@Model.CreatePayment.PartPayment" placeholder="Payment" class="form-control" />
+                                <span class="text-danger" asp-validation-for="CreatePayment.PartPayment"></span>
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(model => model.CreatePayment.PaymentType, new { @class = "col-sm-4 col-form-label" })
+                                @Html.DropDownListFor(model => @Model.CreatePayment.PaymentType, (IEnumerable<SelectListItem>)ViewBag.paymentMode, "Select",
+                                new { @class = "form-control col-md-4"})
+                                @*<input asp-for="@Model.CreatePayment.PaymentType" placeholder="Deadline" class="form-control" />*@
+                                <span class="text-danger" asp-validation-for="CreatePayment.PaymentType"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="height:4px;border-width:0;color:brown;background-color:brown">
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.CreatePhaseDto.PhaseName, new { @class = "col-sm-4 col-form-label" })
+                        <input asp-for="@Model.CreatePhaseDto.PhaseName" placeholder="Phase Name" class="form-control" />
+                        <span class="text-danger" asp-validation-for="CreatePhaseDto.PhaseName"></span>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.CreatePhaseDto.DeadLine, new { @class = "col-sm-4 col-form-label" })
+                        <input asp-for="@Model.CreatePhaseDto.DeadLine" placeholder="Deadline" class="form-control" />
+                        <span class="text-danger" asp-validation-for="CreatePhaseDto.DeadLine"></span>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-lg btn-primary mt-4">Create</button>
+                    </div>
+                    
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

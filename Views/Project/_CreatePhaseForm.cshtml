@@ -1,0 +1,34 @@
+﻿@using Enquiry.Web.Dtos
+@model CreatePhaseDto
+
+@{
+    int projectId = ViewBag.projectId;
+}
+
+<form asp-action="CreatePhase" asp-controller="Project" asp-route-projectId="@projectId" data-ajax="true" data-ajax-method="post" data-ajax-success="OnCreatePhaseAjax">
+
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.PhaseName, new { @class = "col-md-6 col-form-label" })
+            <input asp-for="@Model.PhaseName" placeholder="Phase Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="PhaseName"></span>
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.DeadLine, new { @class = "col-md-6 col-form-label" })
+            <input asp-for="@Model.DeadLine" placeholder="Deadline" class="form-control" />
+            <span class="text-danger" asp-validation-for="DeadLine"></span>
+        </div>
+        <div class="col-md-10">
+                       @Html.CheckBoxFor(model => model.IsPublication)
+                       <b style="Color:darkred">Start Publication</b>
+                       <button type="submit" class="btn btn-sm btn-primary">Create</button>
+        </div>
+        <div class="col-md-2">
+            
+        </div>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />
